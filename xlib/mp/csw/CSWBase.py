@@ -372,6 +372,8 @@ class Host(Base):
         self._db.set_value( self._db_key_worker_state, self._state)
 
     def _on_worker_start(self):
+        if hasattr(self, '_set_error'):
+            self._set_error(None)
         self._process_status = Host._ProcessStatus.STARTED
         #print(f'{self._get_name()} is started.')
         self._on_state_change_evl_call()
@@ -379,6 +381,8 @@ class Host(Base):
     def _on_worker_stop(self, error : str = None, restart : bool = False):
         if error is not None:
             print(f'{self._get_name()} error: {error}')
+            if hasattr(self, '_set_error'):
+                self._set_error(error)
             # Stop on error: reset state
             self._state = self._worker_state_cls()
         self.stop(force=True)

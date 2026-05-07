@@ -44,7 +44,7 @@ class QXFixedLayeredImages(QXWidget):
         self.update()
 
     def sizeHint(self):
-        return QSize(self._fwidth, self._height)
+        return QSize(int(round(self._fwidth)), int(round(self._height)))
 
     def paintEvent(self, event):
         super().paintEvent(event)
@@ -67,10 +67,10 @@ class QXFixedLayeredImages(QXWidget):
 
             if ap > a:
                 ph_fit = h * (a / ap)
-                rect = QRect(0, h_half-ph_fit/2, w, ph_fit )
+                rect = QRect(0, int(round(h_half - ph_fit / 2)), int(round(w)), int(round(ph_fit)))
             elif ap < a:
                 pw_fit = w * (ap / a)
-                rect = QRect(w_half-pw_fit/2, 0, pw_fit, h )
+                rect = QRect(int(round(w_half - pw_fit / 2)), 0, int(round(pw_fit)), int(round(h)))
             else:
                 rect = self.rect()
 

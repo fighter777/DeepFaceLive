@@ -211,6 +211,8 @@ class BackendHost(lib_csw.Host):
                          worker_start_kwargs = worker_start_kwargs)
 
         self._profile_timing_evl = EventListener()
+        self._error_evl = EventListener()
+        self._error_text = None
         self.call_on_msg('_profile_timing', self._on_profile_timing_msg)
 
     def _on_profile_timing_msg(self, timing : float):
@@ -218,6 +220,16 @@ class BackendHost(lib_csw.Host):
 
     def call_on_profile_timing(self, func_or_list):
         self._profile_timing_evl.add(func_or_list)
+
+    def call_on_error(self, func_or_list):
+        self._error_evl.add(func_or_list)
+
+    def get_error(self):
+        return self._error_text
+
+    def _set_error(self, text):
+        self._error_text = text
+        self._error_evl.call(text)
 
 class BackendWorker(lib_csw.Worker):
 
