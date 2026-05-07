@@ -159,6 +159,9 @@ class QDFLAppWindow(qtx.QXWindow):
         menu_language_action_english = menu_language.addAction('English' )
         menu_language_action_english.triggered.connect(lambda: (qtx.QXMainApplication.inst.set_language('en-US'), qtx.QXMainApplication.inst.reinitialize()) )
 
+        menu_language_action_french = menu_language.addAction('Français' )
+        menu_language_action_french.triggered.connect(lambda: (qtx.QXMainApplication.inst.set_language('fr-FR'), qtx.QXMainApplication.inst.reinitialize()) )
+
         menu_language_action_spanish = menu_language.addAction('Español' )
         menu_language_action_spanish.triggered.connect(lambda: (qtx.QXMainApplication.inst.set_language('es-ES'), qtx.QXMainApplication.inst.reinitialize()) )
 

@@ -6,7 +6,7 @@ def L(s : Union[str, None]) -> Union[str, None]:
 
 class Localization:
     lang = os.environ.get('__APP_LANGUAGE', 'en-US')
-    allowed_langs = ['en-US', 'ru-RU', 'zh-CN', 'es-ES', 'it-IT', 'ja-JP', 'de-DE']
+    allowed_langs = ['en-US', 'ru-RU', 'zh-CN', 'es-ES', 'it-IT', 'ja-JP', 'de-DE', 'fr-FR']
 
     @staticmethod
     def set_language(lang : str = None):
@@ -21,9 +21,23 @@ class Localization:
             return None
 
         if len(s) > 0 and s[0] == '@':
-            x = Localization._id_to_string_dict.get(s[1:], None)
+            key = s[1:]
+            x = Localization._id_to_string_dict.get(key, None)
             if x is not None:
-                return x[Localization.lang]
+                if Localization.lang in x:
+                    return x[Localization.lang]
+
+                lang_overrides = Localization._lang_overrides.get(Localization.lang, None)
+                if lang_overrides is not None:
+                    override = lang_overrides.get(key, None)
+                    if override is not None:
+                        return override
+
+                fallback = x.get('en-US', None)
+                if fallback is not None:
+                    return fallback
+
+                return next(iter(x.values()))
             else:
                 print(f'Localization for {s} not found.')
         return s
@@ -1428,4 +1442,125 @@ class Localization:
                 'it-IT' : 'Faccia allineata e scambiata',
                 'ja-JP' : 'アライン済の顔と合成される顔',
                 'de-DE' : 'Ausgerichtete und getauschte Gesichter'},
+    }
+
+    _lang_overrides = {
+    'fr-FR': {
+                'misc.auto': 'auto',
+                'misc.menu_select': '--sélectionner--',
+                'common.device': 'Périphérique',
+                'common.face_id': 'ID du visage',
+                'QBackendPanel.start': 'Démarrer',
+                'QBackendPanel.stop': 'Arrêter',
+                'QBackendPanel.reset_settings': 'Réinitialiser les paramètres',
+                'QBackendPanel.FPS': 'IPS',
+                'QDFLAppWindow.file': 'Fichier',
+                'QDFLAppWindow.language': 'Langue',
+                'QDFLAppWindow.reset_modules_settings': 'Réinitialiser les paramètres des modules',
+                'QDFLAppWindow.reinitialize': 'Réinitialiser',
+                'QDFLAppWindow.quit': 'Quitter',
+                'QDFLAppWindow.help': 'Aide',
+                'QDFLAppWindow.visit_github_page': 'Ouvrir la page GitHub',
+                'QDFLAppWindow.process_priority': 'Priorité du processus',
+                'QDFLAppWindow.process_priority.lowest': 'La plus basse',
+                'QDFLAppWindow.process_priority.normal': 'Normale',
+                'QFileSource.module_title': 'Source fichier',
+                'QFileSource.target_width': 'Largeur cible',
+                'QFileSource.fps': 'IPS',
+                'QFileSource.is_realtime': 'Temps réel',
+                'QFileSource.is_autorewind': 'Retour automatique au début',
+                'QCameraSource.module_title': 'Source caméra',
+                'QCameraSource.device_index': 'Index du périphérique',
+                'QCameraSource.driver': 'Pilote',
+                'QCameraSource.resolution': 'Résolution',
+                'QCameraSource.fps': 'IPS',
+                'QCameraSource.rotation': 'Rotation',
+                'QCameraSource.flip_horizontal': 'Miroir horizontal',
+                'QCameraSource.camera_settings': 'Paramètres caméra',
+                'QCameraSource.open_settings': 'Ouvrir les paramètres',
+                'QCameraSource.load_settings': 'Charger les paramètres',
+                'QCameraSource.save_settings': 'Enregistrer les paramètres',
+                'QFaceDetector.module_title': 'Détecteur de visage',
+                'QFaceDetector.detector_type': 'Type de détecteur',
+                'QFaceDetector.window_size': 'Taille de fenêtre',
+                'QFaceDetector.threshold': 'Seuil',
+                'QFaceDetector.max_faces': 'Nombre max. de visages',
+                'QFaceDetector.sort_by': 'Trier par',
+                'QFaceDetector.temporal_smoothing': 'Lissage temporel',
+                'QFaceDetector.detected_faces': 'Visages détectés',
+                'QFaceAligner.module_title': 'Aligneur de visage',
+                'QFaceAligner.align_mode': "Mode d'alignement",
+                'QFaceAligner.face_coverage': 'Couverture du visage',
+                'QFaceAligner.resolution': 'Résolution',
+                'QFaceAligner.exclude_moving_parts': 'Exclure les parties mobiles',
+                'QFaceAligner.head_mode': 'Mode tête',
+                'QFaceAligner.freeze_z_rotation': 'Bloquer la rotation Z',
+                'QFaceAligner.x_offset': 'Décalage X',
+                'QFaceAligner.y_offset': 'Décalage Y',
+                'QFaceMarker.module_title': 'Marqueur facial',
+                'QFaceMarker.marker_type': 'Type de marqueur',
+                'QFaceMarker.marker_coverage': 'Couverture du marqueur',
+                'QFaceMarker.temporal_smoothing': 'Lissage temporel',
+                'QFaceAnimator.module_title': 'Animateur de visage',
+                'QFaceAnimator.animatable': 'Objet animable',
+                'QFaceAnimator.animator_face_id': "ID du visage animateur",
+                'QFaceAnimator.relative_power': 'Puissance relative',
+                'QFaceAnimator.reset_reference_pose': 'Réinitialiser la pose de référence',
+                'QFaceSwapInsight.module_title': 'Échange de visage Insight',
+                'QFaceSwapInsight.face': 'Visage',
+                'QFaceSwapInsight.match': 'Correspondance',
+                'QFaceSwapDFM.module_title': 'Échange de visage DFM',
+                'QFaceSwapDFM.model': 'Modèle',
+                'QFaceSwapDFM.swap_all_faces': 'Remplacer tous les visages',
+                'QFaceSwapDFM.morph_factor': 'Facteur de morphing',
+                'QFaceSwapDFM.presharpen_amount': 'Netteté avant traitement',
+                'QFaceSwapDFM.pregamma': 'Gamma avant traitement',
+                'QFaceSwapDFM.postgamma': 'Gamma après traitement',
+                'QFaceSwapDFM.two_pass': 'Deux passes',
+                'QFrameAdjuster.module_title': "Ajustement d'image",
+                'QFrameAdjuster.median_blur_per': 'Flou médian (%)',
+                'QFrameAdjuster.degrade_bicubic_per': 'Dégradation bicubique (%)',
+                'QFaceMerger.module_title': 'Fusion du visage',
+                'QFaceMerger.face_x_offset': 'Décalage X du visage',
+                'QFaceMerger.face_y_offset': 'Décalage Y du visage',
+                'QFaceMerger.face_scale': 'Échelle du visage',
+                'QFaceMerger.face_mask_type': 'Type de masque',
+                'QFaceMerger.face_mask_erode': 'Érosion du masque',
+                'QFaceMerger.face_mask_blur': 'Flou du masque',
+                'QFaceMerger.color_transfer': 'Transfert de couleur',
+                'QFaceMerger.interpolation': 'Interpolation',
+                'QFaceMerger.color_compression': 'Compression des couleurs',
+                'QFaceMerger.face_opacity': 'Opacité du visage',
+                'QStreamOutput.module_title': 'Sortie flux',
+                'QStreamOutput.avg_fps': 'IPS moyen',
+                'QStreamOutput.source_type': 'Type de source',
+                'QStreamOutput.show_hide_window': 'Afficher / masquer la fenêtre',
+                'QStreamOutput.aligned_face_id': 'ID du visage aligné',
+                'QStreamOutput.target_delay': 'Délai cible',
+                'QStreamOutput.save_sequence_path': "Chemin d'enregistrement de la séquence",
+                'QStreamOutput.save_fill_frame_gap': "Combler les images manquantes à l'enregistrement",
+                'FileSource.image_folder': "Dossier d'images",
+                'FileSource.video_file': 'Fichier vidéo',
+                'FaceDetector.LARGEST': 'Le plus grand',
+                'FaceDetector.DIST_FROM_CENTER': 'Distance au centre',
+                'FaceDetector.LEFT_RIGHT': 'De gauche à droite',
+                'FaceDetector.RIGHT_LEFT': 'De droite à gauche',
+                'FaceDetector.TOP_BOTTOM': 'De haut en bas',
+                'FaceDetector.BOTTOM_TOP': 'De bas en haut',
+                'FaceAligner.AlignMode.FROM_RECT': 'Depuis le rectangle',
+                'FaceAligner.AlignMode.FROM_POINTS': 'Depuis les points',
+                'FaceAligner.AlignMode.FROM_STATIC_RECT': 'Depuis un rectangle statique',
+                'FaceSwapDFM.model_information': 'Informations sur le modèle',
+                'FaceSwapDFM.filename': 'Nom du fichier',
+                'FaceSwapDFM.resolution': 'Résolution',
+                'FaceSwapDFM.downloading_model': 'Téléchargement du modèle',
+                'StreamOutput.SourceType.SOURCE_FRAME': 'Image source',
+                'StreamOutput.SourceType.ALIGNED_FACE': 'Visage aligné',
+                'StreamOutput.SourceType.SWAPPED_FACE': 'Visage remplacé',
+                'StreamOutput.SourceType.MERGED_FRAME': 'Image fusionnée',
+                'StreamOutput.SourceType.MERGED_FRAME_OR_SOURCE_FRAME': 'Image fusionnée ou image source',
+                'StreamOutput.SourceType.SOURCE_N_MERGED_FRAME': 'Image source et image fusionnée',
+                'StreamOutput.SourceType.SOURCE_N_MERGED_FRAME_OR_SOURCE_FRAME': 'Image source et image fusionnée ou image source',
+                'StreamOutput.SourceType.ALIGNED_N_SWAPPED_FACE': 'Visage aligné et visage remplacé',
+    }
     }
